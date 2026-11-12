@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#F5EDE0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Smart App Hub">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Smart App Hub</title>
+
+    <link rel="manifest" href='data:application/manifest+json,{"name":"Smart App Hub","short_name":"App Hub","start_url":".","display":"standalone","background_color":"#F5EDE0","theme_color":"#211C17","icons":[{"src":"https://placehold.co/192x192/211C17/E5C687?text=HUB","sizes":"192x192","type":"image/png"},{"src":"https://placehold.co/512x512/211C17/E5C687?text=HUB","sizes":"512x512","type":"image/png"}]}'>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+                        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+                    },
+                    colors: {
+                        ivory: { 50: '#FDFBF7', 100: '#F8F1E3', 200: '#EFE3CD', 300: '#DFCEA9' },
+                        gold: { 200: '#F7E7C4', 300: '#E5C687', 400: '#D4AF37', 500: '#B88934', 600: '#94681B', 700: '#6E4B0E' },
+                        espresso: { 950: '#16130F', 900: '#211C17', 800: '#2E2720', 700: '#4A3F33', 500: '#786956' }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body {
+            background-color: #E3D6BE;
+            color: #1A1611;
+            font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+            overflow-x: hidden;
+            user-select: none;
+        }
+        .quiet-luxury-bg {
+            background-color: #F5EDE0;
+            background-image:
+                radial-gradient(ellipse at 18% 0%, rgba(212, 175, 55, 0.28) 0%, transparent 48%),
+                radial-gradient(ellipse at 88% 25%, rgba(255, 255, 255, 0.92) 0%, transparent 45%),
+                radial-gradient(ellipse at 82% 65%, rgba(184, 137, 52, 0.18) 0%, transparent 50%),
+                radial-gradient(ellipse at 15% 98%, rgba(212, 175, 55, 0.25) 0%, transparent 48%),
+                repeating-linear-gradient(135deg, rgba(184, 137, 52, 0.03) 0px, rgba(184, 137, 52, 0.03) 1px, transparent 1px, transparent 14px),
+                linear-gradient(168deg, #FCF9F2 0%, #F4EAD8 52%, #EAE0CE 100%);
+        }
+        .ivory-glass {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(252, 247, 238, 0.94) 100%);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1.5px solid rgba(184, 137, 52, 0.5);
+            box-shadow: 0 12px 28px -8px rgba(33, 28, 23, 0.12), 0 2px 6px rgba(184, 137, 52, 0.1), inset 0 1.5px 1px rgba(255, 255, 255, 1);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .ivory-glass:focus-within {
+            border-color: #B88934;
+            box-shadow: 0 14px 32px -8px rgba(184, 137, 52, 0.26), inset 0 1.5px 1px rgba(255, 255, 255, 1);
+        }
+        .luxury-espresso-tile {
+            background: radial-gradient(circle at 90% 10%, rgba(212, 175, 55, 0.24) 0%, transparent 55%), linear-gradient(150deg, #2D261F 0%, #1E1914 60%, #15110E 100%);
+            border: 1.5px solid rgba(212, 175, 55, 0.65);
+            box-shadow: 0 20px 38px -12px rgba(22, 19, 15, 0.42), 0 6px 14px -4px rgba(184, 137, 52, 0.22), inset 0 1.5px 1px rgba(255, 238, 196, 0.22);
+            transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+        .luxury-espresso-tile:hover {
+            border-color: #E5C687;
+            box-shadow: 0 24px 44px -10px rgba(22, 19, 15, 0.5), 0 8px 18px -4px rgba(212, 175, 55, 0.32), inset 0 1.5px 1px rgba(255, 238, 196, 0.3);
+        }
+        .luxury-espresso-tile:active { transform: scale(0.965); }
+        .luxury-tile {
+            background: linear-gradient(155deg, #FFFFFF 0%, #FAF3E6 100%);
+            border: 1.2px solid rgba(184, 137, 52, 0.45);
+            box-shadow: 0 12px 26px -10px rgba(33, 28, 23, 0.14), inset 0 1.5px 1px rgba(255, 255, 255, 1);
+            transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s ease, border-color 0.22s ease;
+        }
+        .luxury-tile:hover { border-color: #B88934; }
+        .luxury-tile:active { transform: scale(0.965); }
+        .brushed-gold-btn {
+            background: linear-gradient(135deg, #E5C687 0%, #C6963E 48%, #9A6D1D 100%);
+            border: 1px solid rgba(255, 245, 218, 0.7);
+            box-shadow: 0 8px 18px -4px rgba(154, 109, 29, 0.48), inset 0 1.5px 1px rgba(255, 255, 255, 0.7), inset 0 -1.5px 2px rgba(110, 75, 14, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        .os-squircle {
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 10px -2px rgba(22, 19, 15, 0.22), 0 1px 3px rgba(22, 19, 15, 0.14);
+            border: 0.75px solid rgba(0, 0, 0, 0.08);
+        }
+        .os-mini-squircle {
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+        }
+        .modal-overlay { opacity: 0; pointer-events: none; transition: opacity 0.26s ease; }
+        .modal-overlay.open { opacity: 1; pointer-events: auto; }
+        .modal-sheet { transform: translateY(28px) scale(0.96); opacity: 0; transition: transform 0.34s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.26s ease; }
+        .modal-overlay.open .modal-sheet { transform: translateY(0) scale(1); opacity: 1; }
+    </style>
+</head>
+<body class="quiet-luxury-bg min-h-screen flex justify-center items-center">
+
+    <main class="w-full max-w-[440px] min-h-screen sm:min-h-[850px] sm:h-[850px] sm:rounded-[44px] sm:border-2 sm:border-gold-300 sm:shadow-[0_30px_80px_-15px_rgba(33,28,23,0.28)] quiet-luxury-bg flex flex-col justify-between p-5 relative overflow-hidden">
+
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-36 h-1 rounded-b-full bg-gradient-to-r from-transparent via-gold-400 to-transparent opacity-85"></div>
+
+        <!-- 1. ÜST DURUM, HAVA DURUMU & GÜNÜN PUSULASI -->
+        <header class="w-full pt-1 space-y-2">
+            <div class="flex items-center justify-between px-1">
+                <div class="flex items-baseline gap-2.5">
+                    <div id="live-clock" class="text-[28px] font-extrabold tracking-tight text-espresso-900 leading-none">09:41</div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rotate-45 bg-gold-500"></span>
+                        <div id="live-date" class="font-serif italic text-[14px] font-semibold text-espresso-700 tracking-wide">Ho&#351; Geldiniz</div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button onclick="showWeatherToast()" class="px-2.5 py-1.5 rounded-2xl bg-white/95 border border-gold-300 shadow-sm flex items-center gap-1.5 text-espresso-900 hover:border-gold-500 transition">
+                        <i data-lucide="sun" class="w-3.5 h-3.5 text-gold-600"></i>
+                        <span class="text-[11px] font-extrabold">21&#176;</span>
+                    </button>
+
+                    <button onclick="openBackupModal()" title="Yedekleme ve Kurulum" class="w-8 h-8 rounded-2xl bg-white/95 border border-gold-300 shadow-sm flex items-center justify-center text-espresso-800 hover:text-gold-600 hover:border-gold-500 transition">
+                        <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button onclick="nextQuote()" class="w-full min-h-[104px] py-3.5 px-4 rounded-3xl ivory-glass hover:bg-white flex items-center gap-3.5 transition active:scale-[0.99] group mt-3">
+                <div class="shrink-0 w-11 h-11 rounded-full bg-gold-200/35 border border-gold-400/50 flex items-center justify-center text-gold-700 group-hover:rotate-45 transition-transform duration-500">
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="9.5"/>
+                        <circle cx="12" cy="12" r="7" stroke-dasharray="1.5 2.5" opacity="0.6"/>
+                        <polygon points="15.5 8.5 13.4 13.4 8.5 15.5 10.6 10.6 15.5 8.5" fill="currentColor" fill-opacity="0.18"/>
+                        <circle cx="12" cy="12" r="1" fill="currentColor"/>
+                    </svg>
+                </div>
+                <div class="flex-1 text-left min-w-0">
+                    <span class="block text-[9.5px] font-extrabold uppercase tracking-[0.18em] text-gold-600 mb-1">G&#220;N&#220;N PUSULASI</span>
+                    <p id="daily-quote-text" class="font-serif italic text-[15.5px] leading-snug font-bold text-espresso-900 transition-opacity duration-200">
+                        "B&#252;y&#252;k i&#351;ler, karma&#351;ay&#305; sadele&#351;tirip oda&#287;&#305; koruyanlar&#305;n eseridir."
+                    </p>
+                </div>
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-gold-600 shrink-0 opacity-70 group-hover:opacity-100 group-hover:rotate-180 transition-all duration-500"></i>
+            </button>
+        </header>
+
+        <!-- 2. ÜÇLÜ YAPAY ZEKA & ARAMA KOMUTA MERKEZİ -->
+        <section class="w-full space-y-2 mt-3">
+            <form onsubmit="handleGoogleSearch(event)" class="w-full">
+                <div class="ivory-glass rounded-2xl h-[43px] px-3.5 flex items-center gap-2.5">
+                    <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/>
+                        <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24Z"/>
+                        <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14Z"/>
+                        <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96Z"/>
+                    </svg>
+                    <input type="text" id="google-search-input" placeholder="Google'da ara veya URL yaz..." class="w-full bg-transparent text-[13px] font-semibold text-espresso-900 placeholder-espresso-500/75 focus:outline-none">
+                    <button type="submit" class="shrink-0 w-7 h-7 rounded-xl bg-ivory-200/80 hover:bg-gold-200 flex items-center justify-center text-espresso-700 hover:text-gold-700 transition">
+                        <i data-lucide="search" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+            </form>
+
+            <form onsubmit="handleChatGPTLaunch(event)" class="w-full">
+                <div class="ivory-glass rounded-2xl h-[43px] px-3.5 flex items-center gap-2.5">
+                    <div class="w-6 h-6 rounded-lg bg-white border border-black/10 flex items-center justify-center text-[#101010] shrink-0 shadow-xs">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.896zm16.597 3.855l-5.833-3.387L15.119 7.2a.076.076 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667zm2.01-3.023l-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135l-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.795.795 0 0 0-.393.681zm1.097-2.365l2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z"/>
+                        </svg>
+                    </div>
+                    <input type="text" id="chatgpt-prompt-input" placeholder="ChatGPT'ye sor veya a&#231;..." class="w-full bg-transparent text-[13px] font-semibold text-espresso-900 placeholder-espresso-500/75 focus:outline-none">
+                    <button type="submit" class="shrink-0 px-2.5 py-1 rounded-xl bg-espresso-900 hover:bg-espresso-800 text-ivory-50 text-[11px] font-extrabold transition flex items-center gap-1">
+                        <span>Sor</span>
+                        <i data-lucide="arrow-up-right" class="w-3 h-3"></i>
+                    </button>
+                </div>
+            </form>
+
+            <form onsubmit="handleGeminiLaunch(event)" class="w-full">
+                <div class="ivory-glass rounded-2xl h-[43px] px-3.5 flex items-center gap-2.5">
+                    <div class="w-6 h-6 rounded-lg bg-white border border-black/10 flex items-center justify-center shrink-0 shadow-xs">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24">
+                            <defs>
+                                <linearGradient id="gem-bar-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#4285F4"/>
+                                    <stop offset="40%" stop-color="#9B72CB"/>
+                                    <stop offset="75%" stop-color="#D96570"/>
+                                    <stop offset="100%" stop-color="#F4B400"/>
+                                </linearGradient>
+                            </defs>
+                            <path fill="url(#gem-bar-grad)" d="M12 1C12 7.075 16.925 12 23 12C16.925 12 12 16.925 12 23C12 16.925 7.075 12 1 12C7.075 12 12 7.075 12 1Z"/>
+                        </svg>
+                    </div>
+                    <input type="text" id="gemini-prompt-input" placeholder="Gemini'ye sor veya ba&#351;lat..." class="w-full bg-transparent text-[13px] font-semibold text-espresso-900 placeholder-espresso-500/75 focus:outline-none">
+                    <button type="submit" class="shrink-0 px-2.5 py-1 rounded-xl brushed-gold-btn text-espresso-950 text-[11px] font-extrabold transition flex items-center gap-1">
+                        <span>Sor</span>
+                        <i data-lucide="arrow-up-right" class="w-3 h-3"></i>
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- 3. ORTA ALAN: TÜM MENÜ VE RAPHAEL KARTLARI -->
+        <section class="w-full my-auto py-1.5">
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="openHubModal()" class="luxury-espresso-tile rounded-[26px] p-3.5 h-[96px] flex items-center gap-3 text-left relative overflow-hidden group">
+                    <div class="absolute inset-1.5 rounded-[20px] border border-gold-400/25 pointer-events-none"></div>
+                    <div class="shrink-0 w-12 h-12 os-squircle bg-white flex items-center justify-center z-10 p-2">
+                        <div class="grid grid-cols-2 gap-1.5 w-full h-full">
+                            <div class="rounded-[4px] bg-[#2563EB]"></div>
+                            <div class="rounded-[4px] bg-[#F59E0B]"></div>
+                            <div class="rounded-[4px] bg-[#10B981]"></div>
+                            <div class="rounded-[4px] bg-[#E11D48]"></div>
+                        </div>
+                    </div>
+                    <div class="min-w-0 flex-1 z-10">
+                        <div class="flex items-center justify-between gap-1">
+                            <span class="text-[14.5px] font-extrabold text-ivory-50 tracking-tight truncate">T&#252;m Men&#252;</span>
+                            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-gold-400 shrink-0 group-hover:translate-x-0.5 transition-transform"></i>
+                        </div>
+                        <div class="h-px w-full bg-gradient-to-r from-gold-400/60 to-transparent my-1.5"></div>
+                        <p id="hub-stats-subtitle" class="text-[10.5px] font-semibold text-gold-300 truncate">6 Kategori &#8226; 23 Uygulama</p>
+                    </div>
+                </button>
+
+                <div class="luxury-espresso-tile rounded-[26px] p-3.5 h-[96px] flex items-center gap-3 text-left relative overflow-hidden group">
+                    <div class="absolute inset-1.5 rounded-[20px] border border-gold-400/25 pointer-events-none"></div>
+                    <button onclick="launchAssistant()" class="shrink-0 w-12 h-12 os-squircle bg-white flex items-center justify-center z-10 active:scale-95 transition">
+                        <svg class="w-7 h-7" viewBox="0 0 24 24">
+                            <defs>
+                                <linearGradient id="raphael-star-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#D4AF37"/>
+                                    <stop offset="45%" stop-color="#2563EB"/>
+                                    <stop offset="80%" stop-color="#7C3AED"/>
+                                    <stop offset="100%" stop-color="#F59E0B"/>
+                                </linearGradient>
+                            </defs>
+                            <path fill="url(#raphael-star-grad)" d="M12 1.5C12 7.3 16.7 12 22.5 12C16.7 12 12 16.7 12 22.5C12 16.7 7.3 12 1.5 12C7.3 12 12 7.3 12 1.5Z"/>
+                        </svg>
+                    </button>
+                    <div class="min-w-0 flex-1 z-10">
+                        <div class="flex items-center justify-between gap-1">
+                            <button onclick="launchAssistant()" class="text-left min-w-0 flex-1">
+                                <span id="assistant-name-label" class="text-[14.5px] font-extrabold text-ivory-50 tracking-tight truncate block">RAPHAEL</span>
+                            </button>
+                            <button onclick="openAssistantModal(event)" class="shrink-0 w-6 h-6 rounded-lg bg-espresso-800 hover:bg-gold-500 border border-gold-400/40 flex items-center justify-center text-gold-300 hover:text-espresso-950 transition">
+                                <i data-lucide="settings-2" class="w-3 h-3"></i>
+                            </button>
+                        </div>
+                        <div class="h-px w-full bg-gradient-to-r from-gold-400/60 to-transparent my-1.5"></div>
+                        <button onclick="launchAssistant()" class="text-left w-full">
+                            <p id="assistant-sub-label" class="text-[10.5px] font-semibold text-gold-300 truncate">Ki&#351;isel Asistan</p>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. ALT ALAN: 5'Lİ HIZLI ERİŞİM DOCK -->
+        <footer class="w-full pb-1">
+            <div class="flex items-center justify-between px-2 mb-2">
+                <div class="flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rotate-45 bg-gold-500"></span>
+                    <span class="text-[11px] font-extrabold uppercase tracking-[0.16em] text-espresso-800">H&#305;zl&#305; Eri&#351;im</span>
+                </div>
+                <button onclick="toggleDockEditMode()" id="dock-edit-toggle" class="text-[11px] font-bold text-espresso-900 bg-white/95 hover:bg-gold-200 border border-gold-400/60 px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm transition">
+                    <i data-lucide="edit-3" class="w-3 h-3 text-gold-600"></i>
+                    <span>Slotlar&#305; Ba&#287;la</span>
+                </button>
+            </div>
+
+            <div class="ivory-glass rounded-[32px] p-2.5">
+                <div id="quick-dock-grid" class="grid grid-cols-5 gap-1.5"></div>
+            </div>
+        </footer>
+    </main>
+
+    <!-- MODAL 1: TÜM MENÜ KATEGORİ PENCERESİ -->
+    <div id="hub-modal" class="modal-overlay fixed inset-0 z-40 bg-espresso-950/55 backdrop-blur-md flex justify-center items-end sm:items-center p-0 sm:p-4">
+        <div class="modal-sheet w-full max-w-[440px] h-[88vh] sm:h-[790px] bg-ivory-50 border-t sm:border-2 border-gold-300 rounded-t-[34px] sm:rounded-[34px] flex flex-col overflow-hidden shadow-[0_25px_60px_-15px_rgba(22,19,15,0.45)]">
+            <div class="p-5 pb-3.5 border-b border-gold-300/60 bg-white/85 backdrop-blur-md shrink-0">
+                <div class="w-10 h-1 bg-gold-400/40 rounded-full mx-auto mb-3.5 sm:hidden"></div>
+                <div class="flex items-center justify-between gap-2 mb-3.5">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <button id="hub-back-btn" onclick="backToCategories()" class="hidden w-9 h-9 rounded-xl bg-ivory-200 hover:bg-gold-200 border border-gold-300 items-center justify-center text-espresso-900 shrink-0 transition">
+                            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                        </button>
+                        <h2 id="hub-modal-heading" class="text-xl font-extrabold text-espresso-900 tracking-tight truncate">Uygulama Kategorileri</h2>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button id="hub-edit-btn" onclick="toggleHubEditMode()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-ivory-200 text-espresso-800 hover:bg-gold-200 border border-gold-300 flex items-center gap-1.5 transition">
+                            <i data-lucide="pencil" class="w-3.5 h-3.5 text-gold-600"></i>
+                            <span>D&#252;zenle</span>
+                        </button>
+                        <button onclick="closeHubModal()" class="w-9 h-9 rounded-xl bg-ivory-200 hover:bg-ivory-300 border border-gold-300 flex items-center justify-center text-espresso-800 transition">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="relative">
+                    <i data-lucide="search" class="w-4 h-4 text-gold-600 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                    <input type="text" id="hub-filter-input" oninput="filterHubItems(this.value)" placeholder="Kategori veya uygulama ara..." class="w-full bg-ivory-100 border border-gold-300 rounded-2xl h-10 pl-10 pr-4 text-sm font-semibold text-espresso-900 placeholder-espresso-500/75 focus:outline-none focus:border-gold-500">
+                </div>
+            </div>
+            <div id="hub-modal-content" class="flex-1 overflow-y-auto p-5 quiet-luxury-bg"></div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: HIZLI ERİŞİM SLOTU / UYGULAMA DÜZENLEME MODALI -->
+    <div id="slot-editor-modal" class="modal-overlay fixed inset-0 z-50 bg-espresso-950/60 backdrop-blur-md flex justify-center items-center p-4">
+        <div class="modal-sheet w-full max-w-[410px] bg-ivory-50 border-2 border-gold-300 rounded-[30px] p-5 shadow-2xl max-h-[92vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-3.5">
+                <div>
+                    <span id="slot-modal-badge" class="text-[10px] font-bold uppercase tracking-widest text-gold-600">Uygulama Ba&#287;lant&#305;s&#305;</span>
+                    <h3 id="slot-modal-title" class="text-lg font-extrabold text-espresso-900">H&#305;zl&#305; Eri&#351;im Slotunu D&#252;zenle</h3>
+                </div>
+                <button onclick="closeSlotEditorModal()" class="w-8 h-8 rounded-xl bg-ivory-200 flex items-center justify-center text-espresso-800">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <div class="mb-4 bg-ivory-100/90 border border-gold-300/80 rounded-2xl p-3">
+                <label class="block text-[11px] font-bold text-gold-700 uppercase tracking-wider mb-2">Haz&#305;r Uygulama & Sistem K&#305;sayollar&#305;</label>
+                <div id="template-pills-container" class="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto pr-1"></div>
+            </div>
+            <form onsubmit="saveSlotEditorForm(event)" class="space-y-3.5">
+                <div>
+                    <label class="block text-xs font-bold text-espresso-800 mb-1">G&#246;r&#252;nen &#304;sim</label>
+                    <input type="text" id="field-app-name" required class="w-full bg-white border border-gold-300 rounded-xl h-11 px-3.5 text-sm font-semibold text-espresso-900 focus:outline-none focus:border-gold-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-espresso-800 mb-1">Ba&#287;l&#305; Uygulama URL</label>
+                    <input type="text" id="field-app-url" required class="w-full bg-white border border-gold-300 rounded-xl h-11 px-3.5 text-sm font-medium text-espresso-900 focus:outline-none focus:border-gold-500">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-espresso-800 mb-1">&#304;kon Se&#231;imi</label>
+                        <select id="field-app-icon" class="w-full bg-white border border-gold-300 rounded-xl h-11 px-3 text-sm font-semibold text-espresso-900 focus:outline-none focus:border-gold-500">
+                            <option value="phone">Telefon</option>
+                            <option value="users">Rehber</option>
+                            <option value="message-circle">WhatsApp</option>
+                            <option value="message-square">Mesajlar</option>
+                            <option value="mail">Gmail / E-Posta</option>
+                            <option value="map-pin">Haritalar</option>
+                            <option value="camera">Kamera</option>
+                            <option value="globe">Web / Taray&#305;c&#305;</option>
+                            <option value="landmark">Banka / Finans</option>
+                            <option value="wallet">C&#252;zdan</option>
+                            <option value="briefcase">&#304;&#351; / Sat&#305;c&#305; Paneli</option>
+                            <option value="shopping-bag">Al&#305;&#351;veri&#351;</option>
+                            <option value="play-circle">Video / YouTube</option>
+                            <option value="music">M&#252;zik / Spotify</option>
+                            <option value="share-2">Sosyal Medya</option>
+                            <option value="bot">Yapay Zeka</option>
+                            <option value="calendar">Takvim</option>
+                            <option value="folder">Dosyalar</option>
+                            <option value="shield">e-Devlet</option>
+                            <option value="star">Favori</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-espresso-800 mb-1">Renk Temas&#305;</label>
+                        <select id="field-app-color" class="w-full bg-white border border-gold-300 rounded-xl h-11 px-3 text-sm font-semibold text-espresso-900 focus:outline-none focus:border-gold-500">
+                            <option value="gold">Klasik Gold</option>
+                            <option value="emerald">Z&#252;mr&#252;t Ye&#351;ili</option>
+                            <option value="amber">S&#305;cak Kehribar</option>
+                            <option value="sapphire">Safir Mavisi</option>
+                            <option value="ruby">Yakut K&#305;rm&#305;z&#305;s&#305;</option>
+                            <option value="purple">Asil Mor</option>
+                            <option value="bronze">Derin Bronz</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="pt-2 flex gap-2.5">
+                    <button type="button" onclick="closeSlotEditorModal()" class="flex-1 h-11 rounded-xl bg-ivory-200 hover:bg-ivory-300 text-sm font-bold text-espresso-800 transition">&#304;ptal</button>
+                    <button type="submit" class="flex-1 h-11 rounded-xl brushed-gold-btn text-sm font-extrabold text-espresso-950 transition">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 3: YENİ KATEGORİ -->
+    <div id="category-modal" class="modal-overlay fixed inset-0 z-50 bg-espresso-950/60 backdrop-blur-md flex justify-center items-center p-4">
+        <div class="modal-sheet w-full max-w-[380px] bg-ivory-50 border-2 border-gold-300 rounded-[30px] p-5 shadow-2xl">
+            <div class="flex items-center justify-between mb-4">
+                <h3 id="cat-editor-title" class="text-lg font-extrabold text-espresso-900">Yeni Kategori</h3>
+                <button onclick="closeCategoryModal()" class="w-8 h-8 rounded-xl bg-ivory-200 flex items-center justify-center text-espresso-800">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <form onsubmit="saveCategoryForm(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-espresso-800 mb-1">Kategori Ba&#351;l&#305;&#287;&#305;</label>
+                    <input type="text" id="field-cat-name" required class="w-full bg-white border border-gold-300 rounded-xl h-11 px-3.5 text-sm font-semibold text-espresso-900 focus:outline-none focus:border-gold-500">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-espresso-800 mb-1">Kategori &#304;konu</label>
+                        <select id="field-cat-icon" class="w-full bg-white border border-gold-300 rounded-xl h-11 px-3 text-sm font-semibold text-espresso-900 focus:outline-none focus:border-gold-500">
+                            <option value="landmark">Finans & Bankalar</option>
+                            <option value="briefcase">&#304;&#351; & E-Ticaret</option>
+                            <option value="share-2">Sosyal Medya</option>
+                            <option value="play-circle">Video & E&#287;lence</option>
+                            <option value="shopping-bag">Al&#305;&#351;veri&#351;</option>
+                            <option value="cpu">Yapay Zeka</option>
+                            <option value="folder">Genel Klas&#246;r</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-espresso-800 mb-1">Renk Temas&#305;</label>
+                        <select id="field-cat-color" class="w-full bg-white border border-gold-300 rounded-xl h-11 px-3 text-sm font-semibold text-espresso-900 focus:outline-none focus:border-gold-500">
+                            <option value="gold">Klasik Gold</option>
+                            <option value="emerald">Z&#252;mr&#252;t Ye&#351;ili</option>
+                            <option value="amber">S&#305;cak Kehribar</option>
+                            <option value="sapphire">Safir Mavisi</option>
+                            <option value="ruby">Yakut K&#305;rm&#305;z&#305;s&#305;</option>
+                            <option value="purple">Asil Mor</option>
+                            <option value="bronze">Derin Bronz</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="pt-2 flex gap-2.5">
+                    <button type="button" onclick="closeCategoryModal()" class="flex-1 h-11 rounded-xl bg-ivory-200 hover:bg-ivory-300 text-sm font-bold text-espresso-800 transition">&#304;ptal</button>
+                    <button type="submit" class="flex-1 h-11 rounded-xl brushed-gold-btn text-sm font-extrabold text-espresso-950 transition">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 4: RAPHAEL AYARLARI -->
+    <div id="assistant-modal" class="modal-overlay fixed inset-0 z-50 bg-espresso-950/60 backdrop-blur-md flex justify-center items-center p-4">
+        <div class="modal-sheet w-full max-w-[380px] bg-ivory-50 border-2 border-gold-300 rounded-[30px] p-5 shadow-2xl">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-extrabold text-espresso-900">Asistan Yap&#305;land&#305;rmas&#305;</h3>
+                <button onclick="closeAssistantModal()" class="w-8 h-8 rounded-xl bg-ivory-200 flex items-center justify-center text-espresso-800">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <form onsubmit="saveAssistantForm(event)" class="space-y-3.5">
+                <div>
+                    <label class="block text-xs font-bold text-espresso-800 mb-1">Asistan Ad&#305;</label>
+                    <input type="text" id="field-asst-name" required class="w-full bg-white border border-gold-300 rounded-xl h-11 px-3.5 text-sm font-semibold text-espresso-900 focus:outline-none focus:border-gold-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-espresso-800 mb-1">Alt Etiket</label>
+                    <input type="text" id="field-asst-sub" class="w-full bg-white border border-gold-300 rounded-xl h-11 px-3.5 text-sm font-semibold text-espresso-900 focus:outline-none focus:border-gold-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-espresso-800 mb-1">Hedef Uygulama URL</label>
+                    <input type="text" id="field-asst-url" required class="w-full bg-white border border-gold-300 rounded-xl h-11 px-3.5 text-sm font-medium text-espresso-900 focus:outline-none focus:border-gold-500">
+                </div>
+                <div class="pt-2 flex gap-2.5">
+                    <button type="button" onclick="closeAssistantModal()" class="flex-1 h-11 rounded-xl bg-ivory-200 hover:bg-ivory-300 text-sm font-bold text-espresso-800 transition">&#304;ptal</button>
+                    <button type="submit" class="flex-1 h-11 rounded-xl brushed-gold-btn text-sm font-extrabold text-espresso-950 transition">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 5: YEDEKLEME -->
+    <div id="backup-modal" class="modal-overlay fixed inset-0 z-50 bg-espresso-950/60 backdrop-blur-md flex justify-center items-center p-4">
+        <div class="modal-sheet w-full max-w-[400px] bg-ivory-50 border-2 border-gold-300 rounded-[30px] p-5 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-extrabold text-espresso-900">Yedekleme ve Kurulum</h3>
+                <button onclick="closeBackupModal()" class="w-8 h-8 rounded-xl bg-ivory-200 flex items-center justify-center text-espresso-800">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <div class="space-y-3 text-xs">
+                <button onclick="copyBackupJSON()" class="w-full h-11 rounded-xl bg-white hover:bg-ivory-100 border border-gold-300 flex items-center justify-center gap-2 text-espresso-900 font-bold transition shadow-sm">
+                    <i data-lucide="copy" class="w-4 h-4 text-gold-600"></i>
+                    <span>T&#252;m Ayarlar&#305; JSON Olarak Kopyala</span>
+                </button>
+                <div class="pt-1">
+                    <label class="block font-bold text-espresso-800 mb-1">Yedekten Geri Y&#252;kle (JSON Yap&#305;&#351;t&#305;r):</label>
+                    <textarea id="import-json-area" rows="3" class="w-full bg-white border border-gold-300 rounded-xl p-2.5 text-xs font-mono text-espresso-900 focus:outline-none focus:border-gold-500"></textarea>
+                    <button onclick="importBackupJSON()" class="w-full h-10 mt-1.5 rounded-xl brushed-gold-btn text-espresso-950 font-extrabold transition">Yede&#287;i Y&#252;kle ve Uygula</button>
+                </div>
+                <div class="pt-2 border-t border-gold-300/60">
+                    <button onclick="resetAllData()" class="w-full h-10 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 flex items-center justify-center gap-1.5 text-rose-700 font-bold transition">
+                        <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                        <span>Fabrika Ayarlar&#305;na S&#305;f&#305;rla</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 translate-y-3 transition-all duration-300">
+        <div id="toast-message" class="bg-espresso-900/95 border border-gold-400/60 text-ivory-50 text-xs font-semibold px-4 py-2.5 rounded-full shadow-xl backdrop-blur-md whitespace-nowrap">Kaydedildi</div>
+    </div>
+
+    <script>
+        function getRealisticAppIconHTML(item, sizeClass = 'w-12 h-12', isMini = false) {
+            const key = `${item.name || ''} ${item.icon || ''}`.toLowerCase();
+            const boxClass = isMini ? `${sizeClass} os-mini-squircle` : `${sizeClass} os-squircle`;
+            const svgSize = isMini ? 'w-3.5 h-3.5' : 'w-7 h-7';
+            const iconSize = isMini ? 'w-3 h-3' : 'w-6 h-6';
+
+            if (key.includes('telefon') || key.includes('arama') || item.icon === 'phone') {
+                return `<div class="${boxClass} bg-[#22C55E] flex items-center justify-center text-white"><svg class="${isMini ? 'w-3 h-3' : 'w-6 h-6'}" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg></div>`;
+            }
+            if (key.includes('whatsapp') || item.icon === 'message-circle') {
+                return `<div class="${boxClass} bg-[#25D366] flex items-center justify-center text-white"><svg class="${svgSize}" viewBox="0 0 24 24" fill="currentColor"><path d="M12.03 2C6.5 2 2.02 6.48 2.02 12c0 1.77.46 3.49 1.34 5.01L2 22l5.13-1.34A9.94 9.94 0 0 0 12.03 22c5.52 0 10-4.48 10-10s-4.48-10-10-10Zm5.83 14.15c-.24.69-1.41 1.32-1.95 1.4-.5.08-1.13.11-1.82-.11-.42-.13-.96-.31-1.65-.61-2.9-1.25-4.8-4.18-4.94-4.37-.15-.19-1.18-1.57-1.18-3 0-1.43.75-2.13 1.01-2.42.27-.29.58-.36.77-.36.19 0 .39 0 .56.01.18.01.42-.07.66.5.24.58.83 2.02.9 2.17.07.15.12.32.02.51-.1.19-.15.32-.29.49-.15.17-.31.38-.44.51-.15.15-.3.31-.13.61.17.29.76 1.26 1.64 2.04 1.13 1 2.08 1.31 2.37 1.46.29.15.46.12.63-.07.17-.19.73-.85.92-1.14.2-.29.39-.24.66-.15.27.1 1.7.8 1.99.95.29.15.49.22.56.34.07.12.07.7-.17 1.39Z"/></svg></div>`;
+            }
+            if (key.includes('youtube') || item.icon === 'play-circle') {
+                return `<div class="${boxClass} bg-white flex items-center justify-center"><div class="${isMini ? 'w-3.5 h-2.5 rounded-[2px]' : 'w-8 h-5.5 rounded-[6px]'} bg-[#FF0000] flex items-center justify-center"><svg class="${isMini ? 'w-2 h-2' : 'w-3.5 h-3.5'} text-white ml-0.5" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg></div></div>`;
+            }
+            if (key.includes('gemini')) {
+                return `<div class="${boxClass} bg-white flex items-center justify-center"><svg class="${svgSize}" viewBox="0 0 24 24"><defs><linearGradient id="gem-icon-g-${isMini ? 'm' : 'f'}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4285F4"/><stop offset="40%" stop-color="#9B72CB"/><stop offset="75%" stop-color="#D96570"/><stop offset="100%" stop-color="#F4B400"/></linearGradient></defs><path fill="url(#gem-icon-g-${isMini ? 'm' : 'f'})" d="M12 1C12 7.075 16.925 12 23 12C16.925 12 12 16.925 12 23C12 16.925 7.075 12 1 12C7.075 12 12 7.075 12 1Z"/></svg></div>`;
+            }
+            if (key.includes('chatgpt') || key.includes('gpt')) {
+                return `<div class="${boxClass} bg-white flex items-center justify-center text-[#111111]"><svg class="${svgSize}" viewBox="0 0 24 24" fill="currentColor"><path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.896zm16.597 3.855l-5.833-3.387L15.119 7.2a.076.076 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667zm2.01-3.023l-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135l-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.795.795 0 0 0-.393.681zm1.097-2.365l2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z"/></svg></div>`;
+            }
+            if (key.includes('twitter') || key === 'x' || key.startsWith('x ')) {
+                return `<div class="${boxClass} bg-[#0F1419] flex items-center justify-center text-white"><svg class="${isMini ? 'w-3 h-3' : 'w-6 h-6'}" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></div>`;
+            }
+            if (key.includes('facebook')) {
+                return `<div class="${boxClass} bg-[#1877F2] flex items-center justify-center text-white"><svg class="${svgSize}" viewBox="0 0 24 24" fill="currentColor"><path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.557-.14-2.857-.14C11.928 2 10 3.657 10 6.7v2.8H7v4h3V22h4v-8.5Z"/></svg></div>`;
+            }
+            if (key.includes('instagram')) {
+                return `<div class="${boxClass} flex items-center justify-center text-white" style="background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);"><svg class="${svgSize}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"/></svg></div>`;
+            }
+            if (key.includes('sat') || key.includes('trendyol')) {
+                return `<div class="${boxClass} bg-white flex flex-col items-center justify-center px-1"><div class="${isMini ? 'w-3 h-2.5' : 'w-6 h-5'} rounded-t-md bg-[#F27A1A] flex items-center justify-center text-white mb-0.5"><i data-lucide="store" class="${isMini ? 'w-2 h-2' : 'w-3.5 h-3.5'}"></i></div>${!isMini ? `<span class="text-[8px] font-extrabold text-[#F27A1A] leading-none tracking-tight">trendyol</span>` : ''}</div>`;
+            }
+            if (key.includes('hepsiburada')) {
+                return `<div class="${boxClass} bg-[#1E1E1E] flex flex-col items-center justify-center px-1"><span class="${isMini ? 'text-[7px]' : 'text-[9.5px]'} font-extrabold text-white leading-none">hepsi</span>${!isMini ? `<span class="text-[8.5px] font-extrabold text-[#FF6000] leading-tight">burada</span>` : ''}</div>`;
+            }
+            if (key.includes('rehber') || item.icon === 'users') {
+                return `<div class="${boxClass} bg-white flex items-center justify-center"><div class="${isMini ? 'w-3.5 h-3.5' : 'w-7 h-7'} rounded-full bg-[#F59E0B] flex items-center justify-center text-white"><svg class="${isMini ? 'w-2 h-2' : 'w-4 h-4'}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5Zm0 2c-3.33 0-10 1.67-10 5v2h20v-2c0-3.33-6.67-5-10-5Z"/></svg></div></div>`;
+            }
+            if (key.includes('mesaj') || key.includes('sms') || item.icon === 'message-square') {
+                return `<div class="${boxClass} bg-[#1A73E8] flex items-center justify-center text-white"><svg class="${svgSize}" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2Zm-3 11H7v-2h10v2Zm0-3H7V8h10v2Z"/></svg></div>`;
+            }
+            if (key.includes('harita') || key.includes('maps') || item.icon === 'map-pin') {
+                return `<div class="${boxClass} bg-white flex items-center justify-center"><svg class="${svgSize}" viewBox="0 0 24 24"><path fill="#34A853" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><path fill="#4285F4" d="M12 2C8.13 2 5 5.13 5 9c0 1.74.5 3.37 1.41 4.84l9.11-10.8C14.48 2.38 13.28 2 12 2z"/><path fill="#EA4335" d="M12 2c-1.85 0-3.55.72-4.81 1.89l4.81 5.71 4.81-5.71C15.55 2.72 13.85 2 12 2z"/><path fill="#FBBC04" d="M5 9c0 1.74.5 3.37 1.41 4.84L12 9.6 7.19 3.89C5.83 5.16 5 6.98 5 9z"/><circle cx="12" cy="9" r="2.6" fill="#FFFFFF"/></svg></div>`;
+            }
+            if (key.includes('gmail') || item.icon === 'mail') {
+                return `<div class="${boxClass} bg-white flex items-center justify-center"><svg class="${svgSize}" viewBox="0 0 24 24"><path fill="#EA4335" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4.2-8 5-8-5V6l8 5 8-5v2.2z"/></svg></div>`;
+            }
+
+            const solidColors = {
+                gold: 'bg-[#D97706] text-white', emerald: 'bg-[#10B981] text-white', amber: 'bg-[#F59E0B] text-white',
+                sapphire: 'bg-[#2563EB] text-white', ruby: 'bg-[#E11D48] text-white', purple: 'bg-[#7C3AED] text-white', bronze: 'bg-[#27272A] text-white'
+            };
+            const bg = solidColors[item.color] || solidColors.sapphire;
+            return `<div class="${boxClass} ${bg} flex items-center justify-center"><i data-lucide="${item.icon || 'globe'}" class="${iconSize} stroke-[2.2]"></i></div>`;
+        }
+
+        function getFolderPreviewHTML(cat) {
+            const folderThemes = {
+                gold: 'bg-[#F59E0B]/20 border-[#D97706]/40', emerald: 'bg-[#10B981]/20 border-[#059669]/40',
+                amber: 'bg-[#F97316]/20 border-[#EA580C]/40', sapphire: 'bg-[#3B82F6]/20 border-[#2563EB]/40',
+                ruby: 'bg-[#F43F5E]/20 border-[#E11D48]/40', purple: 'bg-[#8B5CF6]/20 border-[#7C3AED]/40', bronze: 'bg-white/15 border-gold-400/40'
+            };
+            const theme = folderThemes[cat.color] || 'bg-white/15 border-gold-400/40';
+            const previewApps = cat.apps.slice(0, 4);
+            let miniGrid = '';
+            for (let i = 0; i < 4; i++) {
+                miniGrid += previewApps[i] ? getRealisticAppIconHTML(previewApps[i], 'w-4 h-4', true) : `<div class="w-4 h-4 rounded-[4px] bg-white/15"></div>`;
+            }
+            return `<div class="w-12 h-12 rounded-[15px] ${theme} border p-1.5 grid grid-cols-2 gap-1 place-items-center backdrop-blur-sm">${miniGrid}</div>`;
+        }
+
+        const STORAGE_KEY = 'smart_app_hub_luxury_v6';
+        const POPULAR_TEMPLATES = [
+            { name: 'Telefon', url: 'tel:', icon: 'phone', color: 'emerald' },
+            { name: 'Rehber', url: 'content://contacts/people/', icon: 'users', color: 'amber' },
+            { name: 'WhatsApp', url: 'https://wa.me/', icon: 'message-circle', color: 'emerald' },
+            { name: 'Mesajlar', url: 'sms:', icon: 'message-square', color: 'sapphire' },
+            { name: 'Haritalar', url: 'https://maps.google.com', icon: 'map-pin', color: 'ruby' },
+            { name: 'Gmail', url: 'https://mail.google.com', icon: 'mail', color: 'ruby' },
+            { name: 'YouTube', url: 'https://www.youtube.com', icon: 'play-circle', color: 'ruby' },
+            { name: 'Instagram', url: 'https://www.instagram.com', icon: 'share-2', color: 'purple' },
+            { name: 'Facebook', url: 'https://www.facebook.com', icon: 'share-2', color: 'sapphire' },
+            { name: 'X', url: 'https://x.com', icon: 'share-2', color: 'bronze' },
+            { name: 'ChatGPT', url: 'https://chatgpt.com', icon: 'bot', color: 'emerald' },
+            { name: 'Gemini', url: 'https://gemini.google.com/app', icon: 'bot', color: 'sapphire' },
+            { name: 'Sat\u0131c\u0131 Paneli', url: 'https://partner.trendyol.com', icon: 'briefcase', color: 'amber' },
+            { name: 'Trendyol', url: 'https://www.trendyol.com', icon: 'shopping-bag', color: 'amber' },
+            { name: 'Hepsiburada', url: 'https://www.hepsiburada.com', icon: 'shopping-bag', color: 'bronze' },
+            { name: 'Garanti BBVA', url: 'https://sube.garantibbva.com.tr', icon: 'landmark', color: 'emerald' },
+            { name: 'Ziraat Mobil', url: 'https://bireysel.ziraatbank.com.tr', icon: 'landmark', color: 'ruby' },
+            { name: 'e-Devlet', url: 'https://giris.turkiye.gov.tr', icon: 'shield', color: 'sapphire' }
+        ];
+
+        const DAILY_QUOTES = [
+            '"B\u00fcy\u00fck i\u015fler, karma\u015fay\u0131 sadele\u015ftirip oda\u011f\u0131 koruyanlar\u0131n eseridir."',
+            '"Disiplin, hedefler ile ba\u015far\u0131 aras\u0131ndaki en zarif k\u00f6pr\u00fcd\u00fcr."',
+            '"Sadelik, karma\u015f\u0131kl\u0131\u011f\u0131n ula\u015ft\u0131\u011f\u0131 en y\u00fcksek ustal\u0131k seviyesidir."',
+            '"Bug\u00fcn att\u0131\u011f\u0131n her net ad\u0131m, yar\u0131n\u0131n g\u00fc\u00e7l\u00fc miras\u0131n\u0131 in\u015fa eder."',
+            '"Zaman\u0131n\u0131 y\u00f6neten, hayat\u0131n\u0131n mimar\u0131 olur."'
+        ];
+
+        const DEFAULT_STATE = {
+            assistant: { name: 'RAPHAEL', subtitle: 'Ki\u015fisel Asistan', url: 'https://gemini.google.com/app' },
+            quickDock: [
+                { id: 'dock-1', name: 'Telefon', url: 'tel:', icon: 'phone', color: 'emerald' },
+                { id: 'dock-2', name: 'WhatsApp', url: 'https://wa.me/', icon: 'message-circle', color: 'emerald' },
+                { id: 'dock-3', name: 'Rehber', url: 'content://contacts/people/', icon: 'users', color: 'amber' },
+                { id: 'dock-4', name: 'X', url: 'https://x.com', icon: 'share-2', color: 'bronze' },
+                { id: 'dock-5', name: 'Haritalar', url: 'https://maps.google.com', icon: 'map-pin', color: 'ruby' }
+            ],
+            categories: [
+                {
+                    id: 'cat-ai', name: 'Yapay Zeka', icon: 'cpu', color: 'sapphire',
+                    apps: [
+                        { id: 't-1', name: 'ChatGPT', url: 'https://chatgpt.com', icon: 'bot', color: 'emerald' },
+                        { id: 't-2', name: 'Gemini', url: 'https://gemini.google.com/app', icon: 'bot', color: 'sapphire' },
+                        { id: 't-3', name: 'Haritalar', url: 'https://maps.google.com', icon: 'map-pin', color: 'ruby' },
+                        { id: 't-4', name: 'e-Devlet', url: 'https://giris.turkiye.gov.tr', icon: 'shield', color: 'sapphire' }
+                    ]
+                },
+                {
+                    id: 'cat-social', name: 'Sosyal', icon: 'share-2', color: 'purple',
+                    apps: [
+                        { id: 's-1', name: 'Facebook', url: 'https://www.facebook.com', icon: 'share-2', color: 'sapphire' },
+                        { id: 's-2', name: 'YouTube', url: 'https://www.youtube.com', icon: 'play-circle', color: 'ruby' },
+                        { id: 's-3', name: 'Instagram', url: 'https://www.instagram.com', icon: 'share-2', color: 'purple' },
+                        { id: 's-4', name: 'X', url: 'https://x.com', icon: 'share-2', color: 'bronze' }
+                    ]
+                },
+                {
+                    id: 'cat-work', name: '\u0130\u015f & E-Ticaret', icon: 'briefcase', color: 'gold',
+                    apps: [
+                        { id: 'w-1', name: 'Sat\u0131c\u0131 Paneli', url: 'https://partner.trendyol.com', icon: 'briefcase', color: 'amber' },
+                        { id: 'w-2', name: 'Gmail', url: 'https://mail.google.com', icon: 'mail', color: 'ruby' },
+                        { id: 'w-3', name: 'Google Drive', url: 'https://drive.google.com', icon: 'folder', color: 'sapphire' },
+                        { id: 'w-4', name: 'Takvim', url: 'https://calendar.google.com', icon: 'calendar', color: 'sapphire' }
+                    ]
+                },
+                {
+                    id: 'cat-shopping', name: 'Al\u0131\u015fveri\u015f & Ya\u015fam', icon: 'shopping-bag', color: 'amber',
+                    apps: [
+                        { id: 'sh-1', name: 'Trendyol', url: 'https://www.trendyol.com', icon: 'shopping-bag', color: 'amber' },
+                        { id: 'sh-2', name: 'Hepsiburada', url: 'https://www.hepsiburada.com', icon: 'shopping-bag', color: 'bronze' },
+                        { id: 'sh-3', name: 'Amazon TR', url: 'https://www.amazon.com.tr', icon: 'shopping-bag', color: 'bronze' },
+                        { id: 'sh-4', name: 'Yemeksepeti', url: 'https://www.yemeksepeti.com', icon: 'shopping-bag', color: 'ruby' }
+                    ]
+                },
+                {
+                    id: 'cat-finance', name: 'Banka & Finans', icon: 'landmark', color: 'emerald',
+                    apps: [
+                        { id: 'f-1', name: 'Garanti BBVA', url: 'https://sube.garantibbva.com.tr', icon: 'landmark', color: 'emerald' },
+                        { id: 'f-2', name: 'Ziraat Mobil', url: 'https://bireysel.ziraatbank.com.tr', icon: 'landmark', color: 'ruby' },
+                        { id: 'f-3', name: 'Akbank', url: 'https://internetsubesi.akbank.com', icon: 'landmark', color: 'ruby' },
+                        { id: 'f-4', name: 'Binance TR', url: 'https://www.trbinance.com', icon: 'wallet', color: 'amber' }
+                    ]
+                },
+                {
+                    id: 'cat-media', name: 'Video & M\u00fczik', icon: 'play-circle', color: 'ruby',
+                    apps: [
+                        { id: 'm-1', name: 'YouTube', url: 'https://www.youtube.com', icon: 'play-circle', color: 'ruby' },
+                        { id: 'm-2', name: 'Spotify', url: 'https://open.spotify.com', icon: 'music', color: 'emerald' },
+                        { id: 'm-3', name: 'Netflix', url: 'https://www.netflix.com', icon: 'play-circle', color: 'ruby' }
+                    ]
+                }
+            ]
+        };
+
+        let appState = loadAppState();
+        let activeCategoryId = null;
+        let hubEditActive = false;
+        let dockEditActive = false;
+        let hubSearchQuery = '';
+        let quoteIndex = 0;
+        let editorContext = { mode: 'dock', index: 0, catId: null, appId: null };
+        let editingCategoryId = null;
+
+        function loadAppState() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (parsed && parsed.categories && parsed.quickDock && parsed.assistant) return parsed;
+                }
+            } catch (e) {}
+            return JSON.parse(JSON.stringify(DEFAULT_STATE));
+        }
+
+        function persistAppState() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+                updateHomeStats();
+            } catch (e) {}
+        }
+
+        function updateClockAndDate() {
+            const now = new Date();
+            document.getElementById('live-clock').textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            document.getElementById('live-date').textContent = now.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', weekday: 'long' });
+        }
+
+        function nextQuote() {
+            const textEl = document.getElementById('daily-quote-text');
+            textEl.style.opacity = '0';
+            setTimeout(() => {
+                quoteIndex = (quoteIndex + 1) % DAILY_QUOTES.length;
+                textEl.textContent = DAILY_QUOTES[quoteIndex];
+                textEl.style.opacity = '1';
+            }, 180);
+        }
+
+        function showWeatherToast() { showToast('\u0130stanbul \u2022 21\u00b0 G\u00fcne\u015fli ve A\u00e7\u0131k'); }
+
+        function launchTargetUrl(rawUrl, label = 'Uygulama') {
+            if (!rawUrl) { showToast('Ge\u00e7erli bir ba\u011flant\u0131 tan\u0131mlanmam\u0131\u015f.'); return; }
+            let target = rawUrl.trim();
+            if (!/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(target)) target = 'https://' + target;
+            showToast(`${label} a\u00e7\u0131l\u0131yor...`);
+            if (target.startsWith('http://') || target.startsWith('https://')) {
+                window.open(target, '_blank', 'noopener,noreferrer');
+            } else {
+                window.location.href = target;
+            }
+        }
+
+        function handleGoogleSearch(e) {
+            e.preventDefault();
+            const input = document.getElementById('google-search-input');
+            const q = input.value.trim();
+            if (!q) { launchTargetUrl('https://www.google.com', 'Google'); return; }
+            if (/^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/.*)?$/.test(q) && !q.includes(' ')) {
+                launchTargetUrl(q, q);
+            } else {
+                launchTargetUrl(`https://www.google.com/search?q=${encodeURIComponent(q)}`, 'Google Aramas\u0131');
+            }
+            input.value = '';
+        }
+
+        function handleChatGPTLaunch(e) {
+            e.preventDefault();
+            const input = document.getElementById('chatgpt-prompt-input');
+            const q = input.value.trim();
+            launchTargetUrl(q ? `https://chatgpt.com/?q=${encodeURIComponent(q)}` : 'https://chatgpt.com', 'ChatGPT');
+            input.value = '';
+        }
+
+        function handleGeminiLaunch(e) {
+            e.preventDefault();
+            const input = document.getElementById('gemini-prompt-input');
+            const q = input.value.trim();
+            launchTargetUrl(q ? `https://gemini.google.com/app?q=${encodeURIComponent(q)}` : 'https://gemini.google.com/app', 'Gemini');
+            input.value = '';
+        }
+
+        function launchAssistant() { launchTargetUrl(appState.assistant.url, appState.assistant.name); }
+        function renderAssistantCard() {
+            document.getElementById('assistant-name-label').textContent = appState.assistant.name || 'RAPHAEL';
+            document.getElementById('assistant-sub-label').textContent = appState.assistant.subtitle || 'Ki\u015fisel Asistan';
+        }
+        function updateHomeStats() {
+            const catCount = appState.categories.length;
+            const appCount = appState.categories.reduce((acc, c) => acc + c.apps.length, 0);
+            document.getElementById('hub-stats-subtitle').textContent = `${catCount} Kategori \u2022 ${appCount} Uygulama`;
+        }
+
+        function toggleDockEditMode() {
+            dockEditActive = !dockEditActive;
+            const btn = document.getElementById('dock-edit-toggle');
+            if (dockEditActive) {
+                btn.classList.add('!bg-espresso-900', '!text-gold-300', '!border-gold-400');
+                btn.innerHTML = `<i data-lucide="check" class="w-3 h-3"></i><span>Tamam</span>`;
+                showToast('D\u00fczenlemek istedi\u011finiz slota dokunun.');
+            } else {
+                btn.classList.remove('!bg-espresso-900', '!text-gold-300', '!border-gold-400');
+                btn.innerHTML = `<i data-lucide="edit-3" class="w-3 h-3 text-gold-600"></i><span>Slotlar\u0131 Ba\u011fla</span>`;
+            }
+            renderQuickDock();
+        }
+
+        function renderQuickDock() {
+            const grid = document.getElementById('quick-dock-grid');
+            grid.innerHTML = '';
+            appState.quickDock.forEach((slot, index) => {
+                const tile = document.createElement('div');
+                tile.className = `relative flex flex-col items-center justify-center py-2 px-1 rounded-2xl transition cursor-pointer ${
+                    dockEditActive ? 'bg-gold-200/70 ring-1 ring-gold-500' : 'hover:bg-white/75 active:scale-95'
+                }`;
+                tile.onclick = () => dockEditActive ? openSlotEditorForDock(index) : launchTargetUrl(slot.url, slot.name);
+                tile.innerHTML = `
+                    <div class="mb-1.5 relative">
+                        ${getRealisticAppIconHTML(slot, 'w-12 h-12')}
+                        <button type="button" onclick="event.stopPropagation(); openSlotEditorForDock(${index});"
+                            class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full ${dockEditActive ? 'bg-espresso-900 text-gold-300 scale-110' : 'bg-white/95 text-espresso-900 border border-gold-400 opacity-90 hover:opacity-100'} flex items-center justify-center shadow-md transition">
+                            <i data-lucide="pencil" class="w-2.5 h-2.5"></i>
+                        </button>
+                    </div>
+                    <span class="text-[11px] font-extrabold text-espresso-900 truncate w-full text-center px-0.5">${slot.name}</span>
+                `;
+                grid.appendChild(tile);
+            });
+            lucide.createIcons();
+        }
+
+        function openHubModal() { activeCategoryId = null; hubSearchQuery = ''; document.getElementById('hub-filter-input').value = ''; renderHubModal(); document.getElementById('hub-modal').classList.add('open'); }
+        function closeHubModal() { document.getElementById('hub-modal').classList.remove('open'); hubEditActive = false; }
+        function backToCategories() { activeCategoryId = null; hubSearchQuery = ''; document.getElementById('hub-filter-input').value = ''; renderHubModal(); }
+        function toggleHubEditMode() { hubEditActive = !hubEditActive; renderHubModal(); }
+        function filterHubItems(val) { hubSearchQuery = val.trim().toLowerCase(); renderHubModal(); }
+
+        function renderHubModal() {
+            const heading = document.getElementById('hub-modal-heading');
+            const backBtn = document.getElementById('hub-back-btn');
+            const editBtn = document.getElementById('hub-edit-btn');
+            const container = document.getElementById('hub-modal-content');
+
+            if (hubEditActive) {
+                editBtn.classList.add('!bg-espresso-900', '!text-gold-300', '!border-gold-400');
+                editBtn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5"></i><span>Bitti</span>`;
+            } else {
+                editBtn.classList.remove('!bg-espresso-900', '!text-gold-300', '!border-gold-400');
+                editBtn.innerHTML = `<i data-lucide="pencil" class="w-3.5 h-3.5 text-gold-600"></i><span>D\u00fczenle</span>`;
+            }
+
+            if (hubSearchQuery.length > 0) {
+                backBtn.classList.add('hidden'); backBtn.classList.remove('flex');
+                heading.textContent = 'Arama Sonu\u00e7lar\u0131';
+                const matchedApps = [];
+                appState.categories.forEach(cat => cat.apps.forEach(app => {
+                    if (app.name.toLowerCase().includes(hubSearchQuery) || cat.name.toLowerCase().includes(hubSearchQuery)) {
+                        matchedApps.push({ ...app, catId: cat.id, catName: cat.name });
+                    }
+                }));
+                if (matchedApps.length === 0) {
+                    container.innerHTML = `<div class="text-center py-16 text-espresso-500"><i data-lucide="search-x" class="w-10 h-10 mx-auto mb-2.5 text-gold-500"></i><p class="text-sm font-bold text-espresso-800">Sonu\u00e7 bulunamad\u0131.</p></div>`;
+                    lucide.createIcons(); return;
+                }
+                let html = `<div class="grid grid-cols-3 gap-3">`;
+                matchedApps.forEach(app => {
+                    html += `<button onclick="launchTargetUrl('${app.url.replace(/'/g, "\\'")}', '${app.name.replace(/'/g, "\\'")}')" class="luxury-tile rounded-2xl p-3 flex flex-col items-center text-center"><div class="mb-2">${getRealisticAppIconHTML(app, 'w-12 h-12')}</div><span class="text-xs font-extrabold text-espresso-900 truncate w-full">${app.name}</span><span class="text-[10px] font-semibold text-gold-700 truncate w-full mt-0.5">${app.catName}</span></button>`;
+                });
+                html += `</div>`; container.innerHTML = html; lucide.createIcons(); return;
+            }
+
+            if (!activeCategoryId) {
+                backBtn.classList.add('hidden'); backBtn.classList.remove('flex');
+                heading.textContent = 'Uygulama Kategorileri';
+                let html = `<div class="grid grid-cols-2 gap-3.5">`;
+                appState.categories.forEach(cat => {
+                    html += `
+                        <div onclick="openCategoryDetail('${cat.id}')" class="luxury-espresso-tile rounded-[26px] p-4 flex flex-col justify-between min-h-[126px] cursor-pointer relative overflow-hidden">
+                            <div class="absolute inset-1.5 rounded-[20px] border border-gold-400/20 pointer-events-none"></div>
+                            <div class="flex items-start justify-between z-10">
+                                ${getFolderPreviewHTML(cat)}
+                                ${hubEditActive ? `
+                                    <div class="flex gap-1" onclick="event.stopPropagation()">
+                                        <button onclick="openCategoryEditor('${cat.id}')" class="w-7 h-7 rounded-lg bg-espresso-800 border border-gold-400/40 text-gold-300 flex items-center justify-center"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
+                                        <button onclick="deleteCategory('${cat.id}')" class="w-7 h-7 rounded-lg bg-rose-950/90 border border-rose-500/40 text-rose-300 flex items-center justify-center"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                                    </div>
+                                ` : `<span class="text-[11px] font-extrabold text-gold-300 bg-espresso-800/90 border border-gold-400/35 px-2.5 py-0.5 rounded-full">${cat.apps.length}</span>`}
+                            </div>
+                            <div class="mt-3 z-10">
+                                <h3 class="text-[14.5px] font-extrabold text-ivory-50 leading-tight truncate">${cat.name}</h3>
+                                <p class="text-[11px] font-medium text-gold-300/85 truncate mt-0.5">${cat.apps.slice(0, 3).map(a => a.name).join(', ') || 'Bo\u015f kategori'}</p>
+                            </div>
+                        </div>`;
+                });
+                html += `<button onclick="openCategoryEditor(null)" class="rounded-[26px] p-4 min-h-[126px] border-2 border-dashed border-gold-500/70 bg-white/60 hover:bg-white/95 flex flex-col items-center justify-center gap-2 text-espresso-800 hover:text-gold-700 transition"><div class="w-11 h-11 rounded-2xl brushed-gold-btn text-espresso-950 flex items-center justify-center"><i data-lucide="folder-plus" class="w-5 h-5"></i></div><span class="text-xs font-extrabold">+ Yeni Kategori</span></button></div>`;
+                container.innerHTML = html; lucide.createIcons(); return;
+            }
+
+            const category = appState.categories.find(c => c.id === activeCategoryId);
+            if (!category) { activeCategoryId = null; renderHubModal(); return; }
+            backBtn.classList.remove('hidden'); backBtn.classList.add('flex');
+            heading.textContent = category.name;
+
+            let html = `<div class="grid grid-cols-3 gap-3">`;
+            category.apps.forEach(app => {
+                html += `
+                    <div onclick="${hubEditActive ? `openSlotEditorForCategoryApp('${category.id}', '${app.id}')` : `launchTargetUrl('${app.url.replace(/'/g, "\\'")}', '${app.name.replace(/'/g, "\\'")}')`}" class="luxury-tile rounded-[22px] p-3 flex flex-col items-center text-center cursor-pointer relative">
+                        ${hubEditActive ? `<div class="absolute -top-1.5 -right-1.5 flex gap-1 z-10" onclick="event.stopPropagation()"><button onclick="openSlotEditorForCategoryApp('${category.id}', '${app.id}')" class="w-6 h-6 rounded-full bg-espresso-900 text-gold-300 flex items-center justify-center shadow-md"><i data-lucide="pencil" class="w-3 h-3"></i></button><button onclick="deleteCategoryApp('${category.id}', '${app.id}')" class="w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center shadow-md"><i data-lucide="x" class="w-3 h-3"></i></button></div>` : ''}
+                        <div class="mb-2">${getRealisticAppIconHTML(app, 'w-12 h-12')}</div>
+                        <span class="text-xs font-extrabold text-espresso-900 truncate w-full">${app.name}</span>
+                    </div>`;
+            });
+            html += `<button onclick="openSlotEditorForCategoryApp('${category.id}', null)" class="rounded-[22px] p-3 min-h-[96px] border-2 border-dashed border-gold-500/70 bg-white/60 hover:bg-white/95 flex flex-col items-center justify-center gap-1.5 text-espresso-800 hover:text-gold-700 transition"><div class="w-11 h-11 rounded-2xl brushed-gold-btn text-espresso-950 flex items-center justify-center"><i data-lucide="plus" class="w-5 h-5"></i></div><span class="text-[11px] font-extrabold">+ Uygulama</span></button></div>`;
+            container.innerHTML = html; lucide.createIcons();
+        }
+
+        function openCategoryDetail(catId) { activeCategoryId = catId; renderHubModal(); }
+
+        function populateTemplatePills() {
+            const container = document.getElementById('template-pills-container');
+            container.innerHTML = '';
+            POPULAR_TEMPLATES.forEach(tpl => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'px-2.5 py-1 rounded-full bg-white hover:bg-espresso-900 text-espresso-900 hover:text-gold-300 border border-gold-300 text-[11px] font-bold transition shadow-xs';
+                btn.textContent = tpl.name;
+                btn.onclick = () => {
+                    document.getElementById('field-app-name').value = tpl.name;
+                    document.getElementById('field-app-url').value = tpl.url;
+                    document.getElementById('field-app-icon').value = tpl.icon;
+                    document.getElementById('field-app-color').value = tpl.color;
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function openSlotEditorForDock(index) {
+            editorContext = { mode: 'dock', index, catId: null, appId: null };
+            const slot = appState.quickDock[index];
+            document.getElementById('slot-modal-badge').textContent = `H\u0131zl\u0131 Eri\u015fim \u2022 Slot ${index + 1}`;
+            document.getElementById('slot-modal-title').textContent = `${slot.name} Slotunu Ba\u011fla`;
+            document.getElementById('field-app-name').value = slot.name;
+            document.getElementById('field-app-url').value = slot.url;
+            document.getElementById('field-app-icon').value = slot.icon;
+            document.getElementById('field-app-color').value = slot.color;
+            populateTemplatePills();
+            document.getElementById('slot-editor-modal').classList.add('open');
+        }
+
+        function openSlotEditorForCategoryApp(catId, appId) {
+            editorContext = { mode: 'category', index: 0, catId, appId };
+            const cat = appState.categories.find(c => c.id === catId);
+            const app = appId ? cat?.apps.find(a => a.id === appId) : null;
+            document.getElementById('slot-modal-badge').textContent = cat ? cat.name : 'Kategori Uygulamas\u0131';
+            document.getElementById('slot-modal-title').textContent = app ? `${app.name} D\u00fczenle` : 'Yeni Uygulama Ba\u011fla';
+            document.getElementById('field-app-name').value = app ? app.name : '';
+            document.getElementById('field-app-url').value = app ? app.url : '';
+            document.getElementById('field-app-icon').value = app ? app.icon : 'globe';
+            document.getElementById('field-app-color').value = app ? app.color : 'gold';
+            populateTemplatePills();
+            document.getElementById('slot-editor-modal').classList.add('open');
+        }
+
+        function closeSlotEditorModal() { document.getElementById('slot-editor-modal').classList.remove('open'); }
+
+        function saveSlotEditorForm(e) {
+            e.preventDefault();
+            const name = document.getElementById('field-app-name').value.trim();
+            const url = document.getElementById('field-app-url').value.trim();
+            const icon = document.getElementById('field-app-icon').value;
+            const color = document.getElementById('field-app-color').value;
+            if (!name || !url) return;
+
+            if (editorContext.mode === 'dock') {
+                appState.quickDock[editorContext.index] = { ...appState.quickDock[editorContext.index], name, url, icon, color };
+                persistAppState(); renderQuickDock(); showToast(`Slot ${editorContext.index + 1} (${name}) ba\u011fland\u0131.`);
+            } else if (editorContext.mode === 'category') {
+                const cat = appState.categories.find(c => c.id === editorContext.catId);
+                if (cat) {
+                    if (editorContext.appId) {
+                        const idx = cat.apps.findIndex(a => a.id === editorContext.appId);
+                        if (idx !== -1) cat.apps[idx] = { ...cat.apps[idx], name, url, icon, color };
+                    } else {
+                        cat.apps.push({ id: 'app-' + Date.now(), name, url, icon, color });
+                    }
+                    persistAppState(); renderHubModal(); showToast(`${name} kategoriye eklendi.`);
+                }
+            }
+            closeSlotEditorModal();
+        }
+
+        function deleteCategoryApp(catId, appId) {
+            const cat = appState.categories.find(c => c.id === catId);
+            if (!cat) return;
+            cat.apps = cat.apps.filter(a => a.id !== appId);
+            persistAppState(); renderHubModal(); showToast('Uygulama kald\u0131r\u0131ld\u0131.');
+        }
+
+        function openCategoryEditor(catId) {
+            editingCategoryId = catId;
+            const cat = catId ? appState.categories.find(c => c.id === catId) : null;
+            document.getElementById('cat-editor-title').textContent = cat ? 'Kategoriyi D\u00fczenle' : 'Yeni Kategori Olu\u015ftur';
+            document.getElementById('field-cat-name').value = cat ? cat.name : '';
+            document.getElementById('field-cat-icon').value = cat ? cat.icon : 'folder';
+            document.getElementById('field-cat-color').value = cat ? cat.color : 'gold';
+            document.getElementById('category-modal').classList.add('open');
+        }
+
+        function closeCategoryModal() { document.getElementById('category-modal').classList.remove('open'); }
+
+        function saveCategoryForm(e) {
+            e.preventDefault();
+            const name = document.getElementById('field-cat-name').value.trim();
+            const icon = document.getElementById('field-cat-icon').value;
+            const color = document.getElementById('field-cat-color').value;
+            if (!name) return;
+
+            if (editingCategoryId) {
+                const cat = appState.categories.find(c => c.id === editingCategoryId);
+                if (cat) { cat.name = name; cat.icon = icon; cat.color = color; }
+                showToast('Kategori g\u00fcncellendi.');
+            } else {
+                appState.categories.push({ id: 'cat-' + Date.now(), name, icon, color, apps: [] });
+                showToast('Yeni kategori olu\u015fturuldu.');
+            }
+            persistAppState(); renderHubModal(); closeCategoryModal();
+        }
+
+        function deleteCategory(catId) {
+            appState.categories = appState.categories.filter(c => c.id !== catId);
+            persistAppState(); renderHubModal(); showToast('Kategori silindi.');
+        }
+
+        function openAssistantModal(e) {
+            if (e) e.stopPropagation();
+            document.getElementById('field-asst-name').value = appState.assistant.name;
+            document.getElementById('field-asst-sub').value = appState.assistant.subtitle;
+            document.getElementById('field-asst-url').value = appState.assistant.url;
+            document.getElementById('assistant-modal').classList.add('open');
+        }
+
+        function closeAssistantModal() { document.getElementById('assistant-modal').classList.remove('open'); }
+
+        function saveAssistantForm(e) {
+            e.preventDefault();
+            appState.assistant.name = document.getElementById('field-asst-name').value.trim() || 'RAPHAEL';
+            appState.assistant.subtitle = document.getElementById('field-asst-sub').value.trim() || 'Ki\u015fisel Asistan';
+            appState.assistant.url = document.getElementById('field-asst-url').value.trim() || 'https://gemini.google.com/app';
+            persistAppState(); renderAssistantCard(); closeAssistantModal(); showToast('Asistan ba\u011flant\u0131s\u0131 g\u00fcncellendi.');
+        }
+
+        function openBackupModal() { document.getElementById('import-json-area').value = ''; document.getElementById('backup-modal').classList.add('open'); }
+        function closeBackupModal() { document.getElementById('backup-modal').classList.remove('open'); }
+
+        function copyBackupJSON() {
+            const jsonStr = JSON.stringify(appState, null, 2);
+            const temp = document.createElement('textarea');
+            temp.value = jsonStr; document.body.appendChild(temp); temp.select(); document.execCommand('copy'); document.body.removeChild(temp);
+            showToast('T\u00fcm ayarlar panoya kopyaland\u0131.');
+        }
+
+        function importBackupJSON() {
+            try {
+                const raw = document.getElementById('import-json-area').value.trim();
+                if (!raw) return;
+                const parsed = JSON.parse(raw);
+                if (!parsed.categories || !parsed.quickDock || !parsed.assistant) throw new Error('Ge\u00e7ersiz format');
+                appState = parsed;
+                persistAppState(); renderAssistantCard(); renderQuickDock(); closeBackupModal();
+                showToast('Yedek ba\u015far\u0131yla geri y\u00fcklendi.');
+            } catch (e) { showToast('Hatal\u0131 JSON verisi.'); }
+        }
+
+        function resetAllData() {
+            appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+            persistAppState(); renderAssistantCard(); renderQuickDock(); closeBackupModal();
+            showToast('Varsay\u0131lan ayarlara d\u00f6n\u00fcld\u00fc.');
+        }
+
+        let toastTimer = null;
+        function showToast(msg) {
+            const container = document.getElementById('toast-container');
+            const label = document.getElementById('toast-message');
+            label.textContent = msg;
+            container.classList.remove('opacity-0', 'translate-y-3');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => { container.classList.add('opacity-0', 'translate-y-3'); }, 2600);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            updateClockAndDate();
+            setInterval(updateClockAndDate, 15000);
+            document.getElementById('daily-quote-text').textContent = DAILY_QUOTES[quoteIndex];
+            renderAssistantCard();
+            renderQuickDock();
+            updateHomeStats();
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
